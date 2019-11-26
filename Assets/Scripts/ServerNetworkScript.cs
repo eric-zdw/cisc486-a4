@@ -385,8 +385,8 @@ public class ServerNetworkScript : MonoBehaviour {
 				AddNewClient(recHostId, connectionId, channelId);
 				break;
 			case NetworkEventType.DataEvent:
-				Debug.Log(string.Format("Message received from host {0}, connection {1}, channel {2}",
-					recHostId, connectionId, channelId));
+				//Debug.Log(string.Format("Message received from host {0}, connection {1}, channel {2}",
+				//	recHostId, connectionId, channelId));
 
 				Debug.Assert(Messages.GetMessageType(recBuffer) == Messages.setAvatarPositionRotation);
 				ForwardMovementMessage(connectionId, recBuffer, dataSize);

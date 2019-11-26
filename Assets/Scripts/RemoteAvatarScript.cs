@@ -82,7 +82,12 @@ public class RemoteAvatarScript : MonoBehaviour {
 	Animator _anim;
 	byte _movementState;
 
-
+	private void UpdateAvatarPositionImmediately() {
+		if ()
+		transform.position = targetPosition;
+		transform.rotation = targetRotation;
+		_movementState = _targetMovementState;
+	}
 
 	/// <summary>
 	/// Update the avatar's position, taking into account the target position and rotation,
@@ -91,7 +96,7 @@ public class RemoteAvatarScript : MonoBehaviour {
 	void UpdateAvatarPosition() {
 		if(UpdateAlgorithm == Algorithm.None) {
 			Debug.Log("Updating avatar position with algorithm 'none'");
-			// UpdateAvatarPositionImmediately();
+			UpdateAvatarPositionImmediately();
 		} else if(UpdateAlgorithm == Algorithm.DeadReckoning) {
 			Debug.Log("Updating avatar position with algorithm 'dead reckoning'");
 			// MoveAvatarWithDeadReckoning();

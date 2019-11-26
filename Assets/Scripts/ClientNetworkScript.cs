@@ -115,8 +115,9 @@ public class ClientNetworkScript : MonoBehaviour {
 		//--------------------------------
 		Messages.UnmarshallPositionRotationMessage(message, out avatarId, out x, out z, out r, out m);
 		RemoteAvatarScript remoteAvatarScript = _remoteAvatar.GetComponent<RemoteAvatarScript>();
-		remoteAvatarScript.targetPosition += new Vector3(x, 0f, z);
-		remoteAvatarScript.targetRotation *= Quaternion.Euler(0f, r, 0f);
+		remoteAvatarScript.targetPosition = new Vector3(x, 0f, z);
+		remoteAvatarScript.targetRotation = Quaternion.Euler(0f, r, 0f);
+		remoteAvatarScript.targetMovementState = m;
 		//--------------------------------
 	}
 
@@ -225,7 +226,15 @@ public class ClientNetworkScript : MonoBehaviour {
 		// sending when the client is disconnected.
 		while(true) {
 			if(_isConnected && _localAvatar != null) {
-				// ...
+				//--------------------------------
+				byte[] setAvatarPosRotMsg = Messages.CreateSetAvatarPositionRotationMessage(
+					_localAvatarId, 
+					_localAvatar.transform.position.x, 
+					_localAvatar.transform.position.z,
+					_localAvatar.transform.rotation.eulerAngles.y,
+					_localAvatar.GetComponent<LocalAvatarScript>().movementState);
+				SendMessageToServer(setAvatarPosRotMsg, _dataChannelId);
+				//--------------------------------
 			}
 			yield return new WaitForSeconds(messageSendFrequency);
 		}
