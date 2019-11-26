@@ -14,6 +14,7 @@ public class RemoteAvatarScript : MonoBehaviour {
 
 	// Where the avatar should be
 	Vector3 _targetPosition;
+	Vector3 _oldTargetPosition;
 	bool _hasTargetPosition = false;
 
 	// Which way the avatar should be pointing
@@ -63,6 +64,8 @@ public class RemoteAvatarScript : MonoBehaviour {
 		}
 	}
 
+	private Vector3 deadReckoningDirection;
+
 	/// <summary>
 	/// This remote avatar will be moved using a choice of no prediction, dead reckoning, or
 	/// dead reckoning with smooth corrections.
@@ -83,10 +86,26 @@ public class RemoteAvatarScript : MonoBehaviour {
 	byte _movementState;
 
 	private void UpdateAvatarPositionImmediately() {
-		if ()
 		transform.position = targetPosition;
 		transform.rotation = targetRotation;
 		_movementState = _targetMovementState;
+	}
+
+	private void MoveAvatarWithDeadReckoning() {
+		if (_oldTargetPosition != _targetPosition) {
+			direction = Vector3.Normalize(targetPosition - transform.position);
+		}
+
+		transform.position += direction * Time.deltaTime;
+
+		//instant correction
+		if (Vector3.Magnitude(targetPosition - transform.position) > 5f) {
+			transform.position = targetPosition;
+		}
+	}
+
+	private void SmoothlyCorrectAvatarPosition() {
+
 	}
 
 	/// <summary>
@@ -99,11 +118,11 @@ public class RemoteAvatarScript : MonoBehaviour {
 			UpdateAvatarPositionImmediately();
 		} else if(UpdateAlgorithm == Algorithm.DeadReckoning) {
 			Debug.Log("Updating avatar position with algorithm 'dead reckoning'");
-			// MoveAvatarWithDeadReckoning();
+			MoveAvatarWithDeadReckoning();
 		} else {
 			Debug.Assert(UpdateAlgorithm == Algorithm.SmoothCorrections);
 			Debug.Log("Updating avatar position with algorithm 'smooth corrections'");
-			// SmoothlyCorrectAvatarPosition();
+			SmoothlyCorrectAvatarPosition();
 		}
 	}
 
